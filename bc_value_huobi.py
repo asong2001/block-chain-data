@@ -12,8 +12,8 @@ from pprint import pprint
 URL = "https://api.hbdm.com"
 
 ####  input your access_key and secret_key below:
-ACCESS_KEY = '1a8b52b3-8e272038-69e4409e-1ea2a'
-SECRET_KEY = '0cb2eb13-f2a0a0a7-fde986bb-318de'
+ACCESS_KEY = ''
+SECRET_KEY = ''
 
 dm = HuobiDM(URL, ACCESS_KEY, SECRET_KEY)
 
