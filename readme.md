@@ -45,3 +45,7 @@ pip install tushare
 ### bc_value_huobi
 
 使用火币交易所的API。
+
+## 代理设置
+
+使用huobi的API时，需要使用Proxifilter作为小飞机的二级代理。
