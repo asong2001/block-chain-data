@@ -46,6 +46,10 @@ pip install tushare
 
 使用火币交易所的API。
 
+### 使用币安的数据源
+
+使用币安的数据源可以请求币安的日线。也可以自行修改币种，目前只获取BTC、ETH、EOS、BNB和BTC。
+
 ## 代理设置
 
-使用huobi的API时，需要使用Proxifilter作为小飞机的二级代理。
+需要使用Proxifilter作为小飞机的二级代理。
