@@ -8,8 +8,8 @@ from xlwt import *
 import datetime
 
 def main():
-    apikey = ''
-    sec_key = ''
+    apikey = 'hjtkUKanfJZ6iLw3sZaCiNz23vmKXYmJKbUW2spaSdu6y7jeRq2dY9Cr2Q7ImjUU'
+    sec_key = 'dIkCVVMTws7EwkarWgnOYqEPzwBuaIDMWzt0hx1hSDUCdFjuccj3e50fSYXWg5rB'
     client = Client(apikey, sec_key)
 
     time_server = client.get_server_time()
