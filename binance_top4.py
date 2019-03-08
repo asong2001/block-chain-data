@@ -7,8 +7,8 @@ from xlwt import *
 import datetime
 
 def main():
-    apikey = ''
-    sec_key = ''
+    apikey = 'hjtkUKanfJZ6iLw3sZaCiNz23vmKXYmJKbUW2spaSdu6y7jeRq2dY9Cr2Q7ImjUU'
+    sec_key = 'dIkCVVMTws7EwkarWgnOYqEPzwBuaIDMWzt0hx1hSDUCdFjuccj3e50fSYXWg5rB'
     client = Client(apikey, sec_key)
 
     time_server = client.get_server_time()
@@ -32,7 +32,8 @@ def main():
     content = data
 
     # build excel
-    fileName = stop_time + '.xls'
+    # fileName = stop_time + '.xls'
+    fileName = 'latest.xls'
     workbook = Workbook(encoding='utf-8')
     xlsheet = workbook.add_sheet("1", cell_overwrite_ok=True)
     table_head = [
