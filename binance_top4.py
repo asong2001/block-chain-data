@@ -1,6 +1,4 @@
 # using this to check binance.com balance
-# 需求
-# 查询币安四大币种净值
 
 from binance.client import Client
 import time
@@ -20,11 +18,11 @@ def main():
     symbol = ["BTCUSDT", "LTCUSDT", "ETHUSDT", "EOSUSDT", "BNBUSDT"]
     data = []
 
-    # 请求时间
+    # request time
     origin_time = time.localtime()
     req_time = time.strftime("%d %b,%Y", origin_time)
     stop_time = req_time + time.strftime(" %H %M %S", origin_time)
-    print('请求截止时间' + stop_time)
+    print('Stop time' + stop_time)
     for s in symbol:
         # fetch weekly klines since it listed
         klines = client.get_historical_klines(s, Client.KLINE_INTERVAL_1DAY, req_time)
@@ -32,7 +30,7 @@ def main():
         data.append(klines[0])
     content = data
 
-    # 创建excel表
+    # build excel
     fileName = stop_time + '.xls'
     workbook = Workbook(encoding='utf-8')
     xlsheet = workbook.add_sheet("1", cell_overwrite_ok=True)
@@ -50,13 +48,13 @@ def main():
         ['无意义参数']
     ]
 
-    # 写入表头
+    # write head
     headlen = len(table_head)
     for i in range(headlen):
         xlsheet.write(0, i, table_head[i])
 
     t = -1
-    contentRow = len(content)  # 列表元素个数  = 待写入内容行数
+    contentRow = len(content)  # 
     for row in range(contentRow):
         for col in range(0, len(content[row])):
             t = t + 1
