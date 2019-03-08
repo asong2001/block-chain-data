@@ -33,7 +33,7 @@ def main():
 
     # build excel
     # fileName = stop_time + '.xls'
-    fileName = 'latest.xls'
+    fileName = '.\tmp\latest.xls'
     workbook = Workbook(encoding='utf-8')
     xlsheet = workbook.add_sheet("1", cell_overwrite_ok=True)
     table_head = [
