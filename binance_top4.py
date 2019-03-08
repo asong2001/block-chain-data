@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*
 # using this to check binance.com balance
 
 from binance.client import Client
