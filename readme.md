@@ -53,3 +53,14 @@ pip install tushare
 ## 代理设置
 
 需要使用Proxifilter作为小飞机的二级代理。
+
+# 币安日线功能更新日志
+
+## 20190311-1607
+
+服务器网址：http://ip/
+latest.xls那个是行情数据，每个整点自动更新一次（12点到最新的整点），收盘时间更新为北京时间。
+
+网站上还能下载到小飞机的安卓版（SSRR.apk），windows（xiaofeiji-win.zip）。
+添加节点可以使用订阅功能
+使用方法：右键小飞机-服务器订阅-服务器订阅设置-Add这个http://ip:8090/encodeSSRList-更新SSR订阅
