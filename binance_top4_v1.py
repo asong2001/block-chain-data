@@ -6,6 +6,7 @@ from binance.client import Client
 import time
 from xlwt import *
 import datetime
+import shutil
 
 def main():
     apikey = 'hjtkUKanfJZ6iLw3sZaCiNz23vmKXYmJKbUW2spaSdu6y7jeRq2dY9Cr2Q7ImjUU'
@@ -78,6 +79,8 @@ def main():
                 xlsheet.write(row + 1, col, content[row][col])
 
     workbook.save(fileName)
+
+    shutil.copyfile('latest.xls', './tmp/latest.xls')
     print('Done')
 
 
