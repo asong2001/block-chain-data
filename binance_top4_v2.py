@@ -127,7 +127,7 @@ def main():
                 # 其余数据
                 wdata = float(content[row][col])
                 wdata = '%.3f' % (wdata * 100)
-                xlsheet.col(col).width = 256 * 12
+                xlsheet.col(col).width = 256 * 14
                 xlsheet.write(row + 1, col, wdata, style = style2)
 
     workbook.save(fileName)
