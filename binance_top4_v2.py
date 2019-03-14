@@ -99,10 +99,9 @@ def main():
                 # ms = content[row][col]
                 # ldate = datetime.datetime.fromtimestamp(ms / 1000.0)
                 # 修改为显示更新的时间
-                ldate = str(bj_time)
-                ldata = round(float(ldata))
+                ldata = round(float(content[row][col]))
                 xlsheet.col(col).width = 256 * 10
-                xlsheet.write(row + 1, col, ldate, style = style2)
+                xlsheet.write(row + 1, col, ldata, style = style2)
 
             elif col == 6:
                 # ms = content[row][col]
