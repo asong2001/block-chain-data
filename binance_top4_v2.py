@@ -95,10 +95,8 @@ def main():
             if col == 0:
                 xlsheet.write(row + 1, col, symbol[row], style = style1)
                 
-            elif col == 5:
-                # ms = content[row][col]
-                # ldate = datetime.datetime.fromtimestamp(ms / 1000.0)
-                # 修改为显示更新的时间
+            elif col == 5 or col == 7 or col == 8 or col == 9:
+                # add round
                 ldata = round(float(content[row][col]))
                 xlsheet.col(col).width = 256 * 10
                 xlsheet.write(row + 1, col, ldata, style = style2)
