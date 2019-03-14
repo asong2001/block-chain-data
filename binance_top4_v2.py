@@ -73,14 +73,16 @@ def main():
         ['最高价'],
         ['最低价'],
         ['收盘价'],
-        ['成交量'],
-        ['收盘时间'],
-        ['成交笔数'],
-        ['主动买入成交量'],
-        ['主动买入成交额'],
         ['振幅'],
         ['涨幅']
     ]
+    '''
+    ['成交量'],
+    ['收盘时间'],
+    ['成交笔数'],
+    ['主动买入成交量'],
+    ['主动买入成交额'],
+    '''
 
     # 写入文件头部
     headlen = len(table_head)
@@ -96,18 +98,25 @@ def main():
                 xlsheet.write(row + 1, col, symbol[row], style = style1)
                 
             elif col == 5 or col == 7 or col == 8 or col == 9:
+                # 交易时间和成交量等数据
                 # add round
+                '''
                 ldata = round(float(content[row][col]))
                 xlsheet.col(col).width = 256 * 10
                 xlsheet.write(row + 1, col, ldata, style = style2)
+                '''
+                pass
 
             elif col == 6:
                 # ms = content[row][col]
                 # ldate = datetime.datetime.fromtimestamp(ms / 1000.0)
                 # 修改为显示更新的时间
+                '''
                 ldate = str(bj_time)
                 xlsheet.col(col).width = 256 * 15
                 xlsheet.write(row + 1, col, ldate, style = style2)
+                '''
+                pass
 
             elif col == 10:
                 # 振幅
@@ -117,7 +126,7 @@ def main():
                 amp = '%.2f%%' % (amp * 100)
                 content[row][col] = amp
                 xlsheet.col(col).width = 256 * 6
-                xlsheet.write(row + 1, col, content[row][col], style = style2)
+                xlsheet.write(row + 1, 5, content[row][col], style = style2)
 
             elif col == 11:
                 # 涨幅
@@ -127,13 +136,13 @@ def main():
                 gain = '%.2f%%' % (gain * 100)
                 content[row][col] = gain
                 xlsheet.col(col).width = 256 * 6
-                xlsheet.write(row + 1, col, content[row][col], style = style2)
+                xlsheet.write(row + 1, 6, content[row][col], style = style2)
 
             else:
                 # 其余数据
                 wdata = float(content[row][col])
-                wdata = '%.3f' % (wdata * 100)
-                xlsheet.col(col).width = 256 * 14
+                wdata = round(wdata,2)
+                xlsheet.col(col).width = 256 * 10
                 xlsheet.write(row + 1, col, wdata, style = style2)
 
     workbook.save(fileName)
