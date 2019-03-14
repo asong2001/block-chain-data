@@ -94,6 +94,15 @@ def main():
             t = t + 1
             if col == 0:
                 xlsheet.write(row + 1, col, symbol[row], style = style1)
+                
+            elif col == 5:
+                # ms = content[row][col]
+                # ldate = datetime.datetime.fromtimestamp(ms / 1000.0)
+                # 修改为显示更新的时间
+                ldate = str(bj_time)
+                ldata = round(float(ldata))
+                xlsheet.col(col).width = 256 * 10
+                xlsheet.write(row + 1, col, ldate, style = style2)
 
             elif col == 6:
                 # ms = content[row][col]
