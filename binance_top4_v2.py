@@ -54,16 +54,20 @@ def main():
     bj_time = (datetime.datetime.now() + datetime.timedelta(hours=8)).strftime("%Y-%m-%d %H:%M")
     print('Beijing time:' + bj_time)
     print('Stop time:' + stop_time)
+
+    # 手动设置日期并设置数据
+    # req_time = '15 Mar,2019'
+
     for s in symbol:
         # fetch weekly klines since it listed
         klines = client.get_historical_klines(s, Client.KLINE_INTERVAL_1DAY, req_time)
-        kk = klines[0]
         data.append(klines[0])
     content = data
 
     # build excel
     fileName = 'latest.xls'
     # fileName = stop_time + '.xls'
+    historyName = stop_time + '.xls'
     workbook = Workbook(encoding='utf-8')
     xlsheet = workbook.add_sheet("1", cell_overwrite_ok=True)
 
@@ -77,6 +81,7 @@ def main():
         ['涨幅']
     ]
     '''
+    取消数据
     ['成交量'],
     ['收盘时间'],
     ['成交笔数'],
@@ -141,14 +146,22 @@ def main():
             else:
                 # 其余数据
                 wdata = float(content[row][col])
-                wdata = round(wdata,2)
+                wdata = round(wdata, 2)
                 xlsheet.col(col).width = 256 * 10
                 xlsheet.write(row + 1, col, wdata, style = style2)
 
     workbook.save(fileName)
+    ms = content[1][6]
+    ldate = datetime.datetime.fromtimestamp(ms / 1000.0)
+    print(ldate)
 
     shutil.copyfile('latest.xls', './tmp/latest.xls')
+    # 保留历史数据
+    path2 = './tmp/history/' + historyName
+    shutil.copyfile('latest.xls', path2)
+
     print('Done')
+
 
 if __name__ == '__main__':
    main()
