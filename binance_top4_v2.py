@@ -155,9 +155,9 @@ def main():
     ldate = datetime.datetime.fromtimestamp(ms / 1000.0)
     print(ldate)
 
-    shutil.copyfile('latest.xls', './tmp/latest.xls')
+    shutil.copyfile('/home/hsong9231/block-chain-data/latest.xls', '/home/hsong9231/block-chain-data/tmp/latest.xls')
     # 保留历史数据
-    path2 = './tmp/history/' + historyName
+    path2 = '/home/hsong9231/block-chain-data/tmp/history/' + historyName
     shutil.copyfile('latest.xls', path2)
 
     print('Done')
