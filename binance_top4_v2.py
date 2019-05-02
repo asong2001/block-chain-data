@@ -8,6 +8,65 @@ from xlwt import *
 import xlwt
 import datetime
 import shutil
+import os
+
+
+def aicoin_data():
+    # header /html/body/div[1]/div[2]/div[2]/div[4]/div/div[2]
+    puburl = 'https://www.aicoin.net.cn/currencies/'
+
+    id_list = ['bitcoin',
+            'ethereum',
+            'ripple',
+            'bitcoinCash',
+            'litecoin']
+
+    # market_over_view = cmc_tree.xpath('//*[@id="currencies_wrapper"]')
+    headers = {"User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36"}
+
+    volume24h = []
+    value24h = []
+
+    for id in id_list:
+        url = puburl + id + '.html'
+        aicoin_pages = requests.get(url,headers=headers)
+        aicoin_tree = html.fromstring(aicoin_pages.text)
+        p = '//*[@id="tab-select-pane-1"]/div/div[1]/div/div[2]/div[1]/div[2]/span[2]/span/span[1]/text()'
+        volume24h.append(aicoin_tree.xpath(p))
+
+
+        p2 = '//*[@id="tab-select-pane-1"]/div/div[1]/div/div[2]/div[1]/div[3]/span[2]/span/span[1]/text()'
+        value24h.append(aicoin_tree.xpath(p2))
+
+    print('24 小时额')
+    print(value24h)
+
+    print('24 小时量')
+    print((volume24h))
+
+    return value24h,volume24h
+
+def cmc_data():
+    # header /html/body/div[1]/div[2]/div[2]/div[4]/div/div[2]
+    cmc_pages = requests.get('https://coinmarketcap.com/')
+    cmc_tree = html.fromstring(cmc_pages.text)
+
+    # 24h成交量
+    volume24h_path = ['//*[@id="id-bitcoin"]/td[5]/a/text()',
+                    '//*[@id="id-ethereum"]/td[5]/a/text()',
+                    '//*[@id="id-ripple"]/td[5]/a/text()',
+                    '//*[@id="id-bitcoin-cash"]/td[5]/a/text()',
+                    '//*[@id="id-litecoin"]/td[5]/a/text()']
+
+    # 笔记：已经可以用这个借口读取到值了
+    cmc24h = []
+    print('获取cmc24小时交易量')
+    for id in volume24h_path:
+        vol24h = cmc_tree.xpath(id)
+        cmc24h.append(vol24h)
+
+    return cmc24h
+
 
 def main():
     # ref https://blog.csdn.net/qq_31489933/article/details/80323426
@@ -78,16 +137,11 @@ def main():
         ['最低价'],
         ['收盘价'],
         ['振幅'],
-        ['涨幅']
+        ['涨幅'],
+        ['24H交易量/w'],
+        ['24H成交额/亿'],
+        ['流通市值占比']
     ]
-    '''
-    取消数据
-    ['成交量'],
-    ['收盘时间'],
-    ['成交笔数'],
-    ['主动买入成交量'],
-    ['主动买入成交额'],
-    '''
 
     # 写入文件头部
     headlen = len(table_head)
@@ -150,10 +204,37 @@ def main():
                 xlsheet.col(col).width = 256 * 10
                 xlsheet.write(row + 1, col, wdata, style = style2)
 
+    # ----------------------AI coin-------------------#
+    # 写入市场交易情况 value 24h
+    [value24h, volume24h] = aicoin_data()
+    content = value24h
+    contentRow = len(content)  #
+    for row in range(contentRow):
+        col = 8
+        t = t + 1
+        c = content[row]
+        d = (c)
+        xlsheet.write(row + 1, col, d, style=style2)
+
+    # volume 24h
+    content = volume24h
+    map(float, content)
+    contentRow = len(content)  #
+    for row in range(contentRow):
+        col = 7
+        t = t + 1
+        xlsheet.write(row + 1, col, content[row], style=style2)
+
     workbook.save(fileName)
-    ms = content[1][6]
-    ldate = datetime.datetime.fromtimestamp(ms / 1000.0)
-    print(ldate)
+
+
+    try:
+        old_file = '/home/hsong9231/block-chain-data/tmp/latest.xls'
+        os.remove(old_file)
+    except Exception:
+        print('No old file')
+    else:
+        pass
 
     shutil.copyfile('/home/hsong9231/block-chain-data/latest.xls', '/home/hsong9231/block-chain-data/tmp/latest.xls')
     # 保留历史数据
