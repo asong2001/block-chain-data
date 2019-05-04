@@ -8,19 +8,19 @@ from xlwt import *
 import xlwt
 import datetime
 import shutil
-import os
 from lxml import html
 import requests
+import xlrd
 
 def aicoin_data():
     # header /html/body/div[1]/div[2]/div[2]/div[4]/div/div[2]
     puburl = 'https://www.aicoin.net.cn/currencies/'
 
     id_list = ['bitcoin',
-            'ethereum',
-            'ripple',
-            'bitcoinCash',
-            'litecoin']
+               'litecoin',
+                'ethereum',
+                'enterpriseOperationSystem',
+                'binanceCoin']
 
     # market_over_view = cmc_tree.xpath('//*[@id="currencies_wrapper"]')
     headers = {"User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36"}
@@ -61,9 +61,9 @@ def cmc_data():
 
     # 笔记：已经可以用这个借口读取到值了
     cmc24h = []
-    print('获取cmc24小时交易量')
     for id in volume24h_path:
         vol24h = cmc_tree.xpath(id)
+        print((vol24h))
         cmc24h.append(vol24h)
 
     return cmc24h
@@ -78,8 +78,8 @@ def main():
     borders.right = xlwt.Borders.THIN
     borders.top = xlwt.Borders.THIN
     borders.bottom = xlwt.Borders.THIN
-    
-    #设置居中
+
+    # 设置居中
     alignment = xlwt.Alignment()
     alignment.horz = xlwt.Alignment.HORZ_CENTER
 
@@ -89,8 +89,8 @@ def main():
     style1.alignment = alignment
 
     style2 = xlwt.XFStyle()
-    style2.alignment = alignment    
-    style2.borders = borders     
+    style2.alignment = alignment
+    style2.borders = borders
 
     apikey = 'hjtkUKanfJZ6iLw3sZaCiNz23vmKXYmJKbUW2spaSdu6y7jeRq2dY9Cr2Q7ImjUU'
     sec_key = 'dIkCVVMTws7EwkarWgnOYqEPzwBuaIDMWzt0hx1hSDUCdFjuccj3e50fSYXWg5rB'
@@ -107,15 +107,16 @@ def main():
     # request time
     origin_time = time.localtime()
     req_time = time.strftime("%d %b,%Y ", origin_time)
+    req_time = '07 Apr,2019'
     # 截止到当前时间的上一个整点时刻
     stop_time = req_time + time.strftime("%H %M", origin_time)
 
-    # 北京时间
     bj_time = (datetime.datetime.now() + datetime.timedelta(hours=8)).strftime("%Y-%m-%d %H:%M")
     print('Beijing time:' + bj_time)
     print('Stop time:' + stop_time)
 
     # 手动设置日期并设置数据
+    # 北京时间
     # req_time = '15 Mar,2019'
 
     for s in symbol:
@@ -131,7 +132,7 @@ def main():
     workbook = Workbook(encoding='utf-8')
     xlsheet = workbook.add_sheet("1", cell_overwrite_ok=True)
 
-    table_head = [ 
+    table_head = [
         ['币种'],
         ['开盘价'],
         ['最高价'],
@@ -147,16 +148,16 @@ def main():
     # 写入文件头部
     headlen = len(table_head)
     for i in range(headlen):
-        xlsheet.write(0, i, table_head[i], style = style1)
+        xlsheet.write(0, i, table_head[i], style=style1)
 
     t = -1
-    contentRow = len(content)  # 
+    contentRow = len(content)  #
     for row in range(contentRow):
         for col in range(0, len(content[row])):
             t = t + 1
             if col == 0:
-                xlsheet.write(row + 1, col, symbol[row], style = style1)
-                
+                xlsheet.write(row + 1, col, symbol[row], style=style1)
+
             elif col == 5 or col == 7 or col == 8 or col == 9:
                 # 交易时间和成交量等数据
                 # add round
@@ -186,7 +187,7 @@ def main():
                 amp = '%.2f%%' % (amp * 100)
                 content[row][col] = amp
                 xlsheet.col(col).width = 256 * 6
-                xlsheet.write(row + 1, 5, content[row][col], style = style2)
+                xlsheet.write(row + 1, 5, content[row][col], style=style1)
 
             elif col == 11:
                 # 涨幅
@@ -196,15 +197,21 @@ def main():
                 gain = '%.2f%%' % (gain * 100)
                 content[row][col] = gain
                 xlsheet.col(col).width = 256 * 6
-                xlsheet.write(row + 1, 6, content[row][col], style = style2)
+                xlsheet.write(row + 1, 6, content[row][col], style=style1)
 
             else:
                 # 其余数据
                 wdata = float(content[row][col])
                 wdata = round(wdata, 2)
                 xlsheet.col(col).width = 256 * 10
-                xlsheet.write(row + 1, col, wdata, style = style2)
-                
+                xlsheet.write(row + 1, col, wdata, style=style2)
+
+    workbook.save(fileName)
+    '''
+    ms = content[1][6]
+    ldate = datetime.datetime.fromtimestamp(ms / 1000.0)
+    print(ldate)
+    '''
     # ----------------------AI coin-------------------#
     # 写入市场交易情况 value 24h
     [value24h, volume24h] = aicoin_data()
@@ -214,7 +221,7 @@ def main():
         col = 8
         t = t + 1
         c = content[row]
-        d = (c)
+        d = c
         xlsheet.write(row + 1, col, d, style=style2)
 
     # volume 24h
@@ -224,22 +231,53 @@ def main():
     for row in range(contentRow):
         col = 7
         t = t + 1
-        xlsheet.write(row + 1, col, content[row], style=style2)
+        ldata = (content[row])
+        xlsheet.write(row + 1, col, ldata, style=style2)
 
     workbook.save(fileName)
 
+    # -------------修改两位小数 -----------#
+    '''
+    data = xlrd.open_workbook(filename=fileName)
+    table = data.sheets()[0]
+    rate = 6.7
+    newcontent = []
+    content = table.col_values(7)
+    for k in range(1,5):
+        cc = content[k]
+        cc = cc.replace(',', '')
+        cc = (float(cc))
+        newcontent.append(cc/rate)
 
-    try:
-        old_file = '/home/hsong9231/block-chain-data/tmp/latest.xls'
-        os.remove(old_file)
-    except Exception:
-        print('No old file')
-    else:
-        pass
+    content = newcontent
+    contentRow = len(content)  #
+    for row in range(contentRow):
+        col = 7
+        t = t + 1
+        ldata = content[row]
+        xlsheet.write(row + 1, col, ldata, style=style1)
+    '''
 
-    shutil.copy('latest.xls', '/home/hsong9231/block-chain-data/tmp/latest.xls')
-    # os.system('latest.xls' '/home/hsong9231/block-chain-data/tmp/latest.xls')
-    # 保留历史数据
+    # 修改汇率
+    data = xlrd.open_workbook(filename=fileName)
+    table = data.sheets()[0]
+    rate = 6.7
+    newcontent = []
+    content = table.col_values(8)
+    for k in range(1, 5):
+        cc = float(content[k])
+        newcontent.append(round(cc / rate, 2))
+
+    content = newcontent
+    contentRow = len(content)  #
+    for row in range(contentRow):
+        col = 8
+        t = t + 1
+        ldata = content[row]
+        xlsheet.write(row + 1, col, ldata, style=style1)
+
+    workbook.save(fileName)
+
     path2 = '/home/hsong9231/block-chain-data/tmp/history/' + historyName
     shutil.copyfile('latest.xls', path2)
 
@@ -247,5 +285,4 @@ def main():
 
 
 if __name__ == '__main__':
-   main()
-
+    main()
