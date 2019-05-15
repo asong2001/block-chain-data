@@ -24,13 +24,27 @@ def timeChange(ms, flag):
 
 if __name__ == "__main__":
     # Song 
+    # API:
+    # SecKey: 
 
+    # Chen
+    # API:
+    # SecKey:
 
     # 机器人1
+    apikey_s = ''
+    seckey_s = ''
+    client_s = Client(apikey_s,seckey_s)
 
     # 公共查询机器人
+    pub_apikey = ''
+    pub_seckey = ''
+    pub_client = Client(pub_apikey, pub_seckey)
         
     # 机器人2
+    apikey_chen = ''
+    seckey_chen = ''
+    client_chen = Client(api_key=apikey_chen, api_secret=seckey_chen)
 
     # 查询服务器时间
     server_time = pub_client.get_server_time()
